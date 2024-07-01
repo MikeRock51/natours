@@ -9,8 +9,10 @@ class AppError extends Error {
     }
 
     static globalErrorHandler(err, req, res, next) {
-        console.error(err);
-        sendError(err, res);
+        let error = { ...err };
+        console.log(err);
+        if (!error.isOperational) error = handleDBErrors(err);
+        sendError(error, res);
     }
 
     static catchAsync = (fn) => {
@@ -20,6 +22,16 @@ class AppError extends Error {
                 next(err)
             });
         }
+    }
+}
+
+function handleDBErrors(err) {
+    if (err.name === "CastError") {
+        return new AppError(`Invalid ${err.path}: ${err.value}`, 400);
+    } else if (err.code === 11000) {
+        return new AppError(`Duplicate field value: ${err.keyValue.name}. Please use another value!`, 400);
+    } else {
+        return err;
     }
 }
 
