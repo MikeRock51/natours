@@ -30,6 +30,9 @@ function handleDBErrors(err) {
         return new AppError(`Invalid ${err.path}: ${err.value}`, 400);
     } else if (err.code === 11000) {
         return new AppError(`Duplicate field value: ${err.keyValue.name}. Please use another value!`, 400);
+    } else if (err.name === "ValidationError") {
+        const errors = Object.values(err.errors).map(el => el.message);
+        return new AppError(`Invalid input data: ${errors.join('. ')}`, 400);
     } else {
         return err;
     }
