@@ -31,7 +31,7 @@ app.use('/api/v1/users', userRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`This route: ${req.originalUrl} does not exist!`, 404));
-})
+});
 
 app.use(AppError.globalErrorHandler);
 

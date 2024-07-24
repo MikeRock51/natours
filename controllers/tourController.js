@@ -2,7 +2,6 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/errors/AppErrors');
-const catchAsync = require('../utils/errors/errorCatcher');
 
 exports.getAllTours = AppError.catchAsync(async (req, res, next) => {
   const query = Tour.find();
