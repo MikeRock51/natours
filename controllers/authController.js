@@ -37,10 +37,14 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const user = await UserModel.findOne({ email }).select('+password');
 
-  if (!user) return next(new AppError('Incorrect email or password...', 401));
+  if (!user || !(await user.validatePassword(password, user.password)))
+    return next(new AppError('Incorrect email or password...', 401));
+
+  const token = signToken(user._id);
 
   res.status(200).json({
     status: 'success',
-    message: 'Login successful!'
+    message: 'Login successful!',
+    token
   });
 });
