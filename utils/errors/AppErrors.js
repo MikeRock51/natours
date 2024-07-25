@@ -1,4 +1,4 @@
-const { handleDBErrors, sendError } = require('./errorHandler');
+// const { handleDBErrors, sendError } = require('./errorHandler');
 
 class AppError extends Error {
   constructor(message, statusCode) {
@@ -10,21 +10,21 @@ class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  static globalErrorHandler(err, req, res, next) {
-    let error = { ...err };
-    if (!error.isOperational) error = handleDBErrors(err);
-    error.message = err.message;
-    sendError(error, res);
-  }
+  // static globalErrorHandler(err, req, res, next) {
+  //   let error = { ...err };
+  //   if (!error.isOperational) error = handleDBErrors(err);
+  //   error.message = err.message;
+  //   sendError(error, res);
+  // }
 
-  static catchAsync(fn) {
-    return (req, res, next) => {
-      fn(req, res, next).catch(err => {
-        console.log(err);
-        next(err);
-      });
-    };
-  }
+  // static catchAsync(fn) {
+  //   return (req, res, next) => {
+  //     fn(req, res, next).catch(err => {
+  //       console.log(err);
+  //       next(err);
+  //     });
+  //   };
+  // }
 }
 
 module.exports = AppError;

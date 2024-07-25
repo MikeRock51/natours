@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const AppError = require('./utils/errors/AppErrors');
+const { globalErrorHandler } = require('./utils/errors/errorHandler');
 
 const app = express();
 
@@ -33,6 +34,6 @@ app.use('*', (req, res, next) => {
   next(new AppError(`This route: ${req.originalUrl} does not exist!`, 404));
 });
 
-app.use(AppError.globalErrorHandler);
+app.use(globalErrorHandler);
 
 module.exports = app;

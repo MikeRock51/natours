@@ -1,5 +1,14 @@
 const AppError = require('./AppErrors');
 
+function catchAsync(fn) {
+  return (req, res, next) => {
+    fn(req, res, next).catch(err => {
+      console.log(err);
+      next(err);
+    });
+  };
+}
+
 function handleDBErrors(err) {
   if (err.name === 'CastError') {
     return new AppError(`Invalid ${err.path}: ${err.value}`, 400);
@@ -35,4 +44,11 @@ function sendError(err, res) {
   }
 }
 
-module.exports = { handleDBErrors, sendError };
+function globalErrorHandler(err, req, res, next) {
+  let error = { ...err };
+  if (!error.isOperational) error = handleDBErrors(err);
+  error.message = err.message;
+  sendError(error, res);
+}
+
+module.exports = { handleDBErrors, sendError, globalErrorHandler, catchAsync };
