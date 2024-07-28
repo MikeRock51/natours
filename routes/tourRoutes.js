@@ -7,7 +7,9 @@ const router = express.Router();
 // router.param('id', tourController.checkID);
 
 router.route('/stats').get(authenticate, tourController.getStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(authenticate, tourController.getMonthlyPlan);
 
 router
   .route('/')

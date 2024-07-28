@@ -64,7 +64,15 @@ exports.authenticate = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  console.log(decoded);
+  const user = await UserModel.findById(decoded.id);
+  if (!user) return next(new AppError('User no longer exists...', 401));
+
+  if (user.changedPasswordAfter(decoded.iat))
+    return next(
+      new AppError('Password was recently changed. Please log in again!', 401)
+    );
+
+  req.currentUser = user;
 
   next();
 });
