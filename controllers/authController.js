@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
 const AppError = require('../utils/errors/AppErrors');
@@ -47,4 +48,23 @@ exports.login = catchAsync(async (req, res, next) => {
     message: 'Login successful!',
     token
   });
+});
+
+exports.authenticate = catchAsync(async (req, res, next) => {
+  const { authorization } = req.headers;
+  const token =
+    authorization && authorization.startsWith('Bearer')
+      ? authorization.split(' ')[1]
+      : null;
+
+  if (!token)
+    return next(
+      new AppError('You must be logged in to access this route!', 401)
+    );
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  console.log(decoded);
+
+  next();
 });
