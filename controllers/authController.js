@@ -101,13 +101,49 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetUrl = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
+  )}/api/v1/users/reset-password/${resetToken}`;
 
   res.status(200).json({
     status: 'success',
     messsage: 'Password reset token has been sent to your email...',
     resetUrl
   });
+});
 
-  // next();
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+  const { password, passwordConfirm } = req.body;
+
+  if (!password || !passwordConfirm)
+    return next(
+      new AppError('Please provide new password and passwordConfirm...', 400)
+    );
+
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+
+  const user = await UserModel.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gte: Date.now() }
+  });
+
+  if (!user)
+    return next(new AppError('Token is invalid or has expired...', 400));
+
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  const newAuthToken = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Password reset successful!',
+    token: newAuthToken
+  });
 });

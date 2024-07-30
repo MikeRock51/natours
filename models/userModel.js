@@ -24,7 +24,7 @@ const UserSchema = mongoose.Schema({
     min: 8,
     select: false
   },
-  passwordConfirmed: {
+  passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password...'],
     min: 8,
@@ -50,7 +50,15 @@ UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
-  this.passwordConfirmed = undefined;
+  this.passwordConfirm = undefined;
+
+  next();
+});
+
+UserSchema.pre('save', async function(next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
 
   next();
 });
