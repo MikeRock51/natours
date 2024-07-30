@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
@@ -95,12 +96,17 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await UserModel.findOne({ email });
   if (!user) return next(new AppError('User does not exist!', 404));
 
-  const crypto = require('crypto');
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
 
-  console.log(user, crypto.randomBytes(4).toString('hex'));
+  const resetUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/resetPassword/${resetToken}`;
 
   res.status(200).json({
-    status: 'success'
+    status: 'success',
+    messsage: 'Password reset token has been sent to your email...',
+    resetUrl
   });
 
   // next();
