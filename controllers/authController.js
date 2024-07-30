@@ -87,3 +87,21 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) return next(new AppError('Please provide your email!', 400));
+
+  const user = await UserModel.findOne({ email });
+  if (!user) return next(new AppError('User does not exist!', 404));
+
+  const crypto = require('crypto');
+
+  console.log(user, crypto.randomBytes(4).toString('hex'));
+
+  res.status(200).json({
+    status: 'success'
+  });
+
+  // next();
+});
