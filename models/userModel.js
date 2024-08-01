@@ -36,7 +36,10 @@ const UserSchema = mongoose.Schema({
     }
   },
   photo: String,
-  passwordChangedAt: Date,
+  passwordChangedAt: {
+    type: Date,
+    select: false
+  },
   passwordResetToken: String,
   passwordResetExpires: Date,
   role: {
