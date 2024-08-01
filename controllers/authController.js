@@ -121,8 +121,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
 
-    console.log(err);
-
     return next(
       new AppError(
         'There was an error sending the email. Try again later!',
@@ -166,6 +164,38 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Password reset successful!',
+    token: newAuthToken
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword, passwordConfirm } = req.body;
+
+  if (!currentPassword || !newPassword || !passwordConfirm)
+    return next(
+      new AppError(
+        'Please provide your current password, new password and passwordConfirm...',
+        400
+      )
+    );
+
+  const user = await UserModel.findById(req.currentUser._id).select(
+    '+password'
+  );
+
+  if (!(await user.validatePassword(currentPassword, user.password))) {
+    return next(new AppError('Incorrect current password...', 401));
+  }
+
+  user.password = newPassword;
+  user.passwordConfirm = passwordConfirm;
+  await user.save();
+
+  const newAuthToken = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Password updated successful!',
     token: newAuthToken
   });
 });
