@@ -1,4 +1,5 @@
-const { parseFilterQuery } = require('./helpers');
+const { tourFields } = require('./constants');
+const { filterObject } = require('./helpers');
 
 class APIFeatures {
   constructor(dbQuery, reqQueries) {
@@ -8,8 +9,8 @@ class APIFeatures {
 
   filter() {
     /** Filters query based on query params */
-    const filterObject = parseFilterQuery(this.reqQueries);
-    this.dbQuery.find(filterObject);
+    const filteredObject = filterObject(this.reqQueries, tourFields);
+    this.dbQuery.find(filteredObject);
     return this;
   }
 
