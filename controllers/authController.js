@@ -12,24 +12,36 @@ const signToken = userId => {
   });
 };
 
+const createAndSendToken = (
+  user,
+  statusCode,
+  message,
+  res,
+  returnUser = true
+) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    message,
+    token,
+    data: returnUser
+      ? {
+          user
+        }
+      : undefined
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await UserModel.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    passwordConfirmed: req.body.passwordConfirmed
+    passwordConfirm: req.body.passwordConfirm
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    message: 'User created successfully!',
-    data: {
-      token,
-      user: newUser
-    }
-  });
+  createAndSendToken(newUser, 201, 'User created successfully!', res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -43,13 +55,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.validatePassword(password, user.password)))
     return next(new AppError('Incorrect email or password...', 401));
 
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Login successful!',
-    token
-  });
+  createAndSendToken(user, 200, 'Login successful!', res);
 });
 
 exports.authenticate = catchAsync(async (req, res, next) => {
@@ -159,13 +165,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   await user.save();
 
-  const newAuthToken = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Password reset successful!',
-    token: newAuthToken
-  });
+  createAndSendToken(user, 200, 'Password reset successful!', res, false);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -191,11 +191,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = passwordConfirm;
   await user.save();
 
-  const newAuthToken = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Password updated successful!',
-    token: newAuthToken
-  });
+  createAndSendToken(user, 200, 'Password reset successful!', res, false);
 });
