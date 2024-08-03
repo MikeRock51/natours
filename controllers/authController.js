@@ -20,6 +20,16 @@ const createAndSendToken = (
   returnUser = true
 ) => {
   const token = signToken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_TTL * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+  res.cookie('token', token, cookieOptions);
 
   res.status(statusCode).json({
     status: 'success',
@@ -27,7 +37,7 @@ const createAndSendToken = (
     token,
     data: returnUser
       ? {
-          user
+          user: { ...user.toJSON(), password: undefined }
         }
       : undefined
   });
