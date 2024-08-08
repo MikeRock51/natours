@@ -1,0 +1,20 @@
+Here is an idea I have.
+- We can have a fixed list of popular players that people are most likely to search for (between 100 -200??).
+- A fixed list of top teams where top players are most likely to play.
+- A list of top leagues as well.
+
+So when indexing we check:
+
+If the player is in the fixed top players list:
+    we assign a high priority to that player
+
+Else if the player plays for one of the top teams in our list:
+    we assign a medium priority to that player
+
+Else if the player plays for a team in one of the top leagues:
+    we assign a low priority
+
+Else:
+    we assign no priority
+
+Perhaps we can start here and improve on it?

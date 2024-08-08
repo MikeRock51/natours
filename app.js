@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -14,6 +15,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 1 hour
+  max: 2,
+  message: 'Too many requests from this IP, please try again in an hour!'
+});
+
+app.use('/api', limiter);
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
