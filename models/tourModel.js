@@ -80,7 +80,30 @@ const toursSchema = mongoose.Schema({
   secretTour: {
     type: Boolean,
     default: false
-  }
+  },
+  startLocation: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: [Number],
+    address: String,
+    description: String
+  },
+  locations: [
+    {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point'
+      },
+      coordinates: [Number],
+      day: Number,
+      address: String,
+      description: String
+    }
+  ]
 });
 
 const Tour = mongoose.model('Tour', toursSchema);

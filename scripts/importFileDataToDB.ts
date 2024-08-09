@@ -6,7 +6,7 @@ const argv = minimist(process.argv.slice(2));
 
 async function readFileData() {
   const fileData = await fs.readFile(
-    `${__dirname}/../dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours.json`,
     'utf-8'
   );
   return JSON.parse(fileData);
