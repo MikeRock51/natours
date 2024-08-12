@@ -103,7 +103,20 @@ const toursSchema = mongoose.Schema({
       address: String,
       description: String
     }
+  ],
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    }
   ]
+});
+
+toursSchema.pre(/^find/, async function(next) {
+  this.populate({
+    path: 'guides'
+  });
+  next();
 });
 
 const Tour = mongoose.model('Tour', toursSchema);

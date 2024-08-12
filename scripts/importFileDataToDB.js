@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
-const Tour = require('../models/tourModel');
 const minimist = require('minimist');
+const Tour = require('../models/tourModel');
 
 const argv = minimist(process.argv.slice(2));
 
@@ -16,7 +16,7 @@ async function importData() {
   try {
     const data = await readFileData();
     const response = await Tour.create(data);
-    console.log( response.length, 'tours created successfully: ');
+    console.log(response.length, 'tours created successfully: ');
   } catch (error) {
     console.log('Error importing data: ', error);
   }
