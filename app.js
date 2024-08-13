@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const AppError = require('./utils/errors/AppErrors');
 const { globalErrorHandler } = require('./utils/errors/errorHandler');
 
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`This route: ${req.originalUrl} does not exist!`, 404));
