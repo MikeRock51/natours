@@ -112,7 +112,7 @@ const toursSchema = mongoose.Schema({
   ]
 });
 
-toursSchema.pre(/^find/, async function(next) {
+toursSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'guides'
   });
