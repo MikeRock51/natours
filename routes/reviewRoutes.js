@@ -5,9 +5,11 @@ const {
   createReview
 } = require('../controllers/reviewController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.get('/', authenticate, restrictTo('admin'), getAllReviews);
-router.post('/', authenticate, createReview);
+router
+  .route('/')
+  .get(authenticate, getAllReviews)
+  .post(authenticate, restrictTo('user'), createReview);
 
 module.exports = router;
