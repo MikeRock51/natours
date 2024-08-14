@@ -16,12 +16,16 @@ router
 router
   .route('/me')
   .patch(authController.authenticate, userController.updateUser)
-  .delete(authController.authenticate, userController.deleteUser);
+  .delete(authController.authenticate, userController.deleteMe);
 
 router
   .route('/:id')
   .get(userController.getUser)
   .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+  .delete(
+    authController.authenticate,
+    authController.restrictTo('admin'),
+    userController.deleteUser
+  );
 
 module.exports = router;

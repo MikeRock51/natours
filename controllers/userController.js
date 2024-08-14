@@ -2,6 +2,7 @@ const UserModel = require('../models/userModel');
 const { userFields } = require('../utils/constants');
 const { catchAsync } = require('../utils/errors/errorHandler');
 const { filterObject } = require('../utils/helpers');
+const factory = require('./factoryFunctions');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await UserModel.find();
@@ -48,7 +49,8 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     message: 'User updated successfully!'
   });
 });
-exports.deleteUser = catchAsync(async (req, res, next) => {
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
   await UserModel.findOneAndUpdate(req.currentUser._id, { active: false });
 
   res.status(204).json({
@@ -56,3 +58,5 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     message: 'User deactivated successfully!'
   });
 });
+
+exports.deleteUser = factory.deleteOne(UserModel);
