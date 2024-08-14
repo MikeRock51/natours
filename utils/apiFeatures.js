@@ -34,8 +34,8 @@ class APIFeatures {
 
   paginate() {
     /** Paginates the query */
-    const { page = 1, limit = 5 } = this.reqQueries;
-    this.dbQuery.skip((page - 1) * limit).limit(+limit);
+    const { page = 1, limit } = this.reqQueries;
+    this.dbQuery.skip((page - 1) * limit).limit(+limit || 0);
     return this;
   }
 }
