@@ -15,17 +15,13 @@ module.exports.getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports.createReview = catchAsync(async (req, res, next) => {
+module.exports.setTourBody = (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.currentUser._id;
 
-  await ReviewModel.create(req.body);
+  next();
+};
 
-  res.status(201).json({
-    status: 'success',
-    message: 'Review created successfully!'
-  });
-});
-
+module.exports.createReview = factory.createOne(ReviewModel);
 module.exports.updateReview = factory.updateOne(ReviewModel);
 module.exports.deleteReview = factory.deleteOne(ReviewModel);
