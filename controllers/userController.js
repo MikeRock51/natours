@@ -27,7 +27,8 @@ exports.createUser = (req, res) => {
     message: 'This route is not yet defined!'
   });
 };
-exports.updateUser = catchAsync(async (req, res, next) => {
+
+exports.validateAndFilterUpdateBody = (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return res.status(400).json({
       status: 'error',
@@ -36,19 +37,14 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     });
   }
 
-  // console.log(req.currentUser);
-
   const filteredBody = filterObject(req.body, userFields);
+  req.body = filteredBody;
+  req.params.id = req.currentUser._id;
 
-  await UserModel.findOneAndUpdate(req.currentUser._id, filteredBody, {
-    runValidators: true
-  });
+  next();
+};
 
-  res.status(200).json({
-    status: 'success',
-    message: 'User updated successfully!'
-  });
-});
+exports.updateUser = factory.updateOne(UserModel);
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await UserModel.findOneAndUpdate(req.currentUser._id, { active: false });

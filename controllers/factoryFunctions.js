@@ -12,3 +12,19 @@ exports.deleteOne = Model =>
       status: 'success'
     });
   });
+
+exports.updateOne = Model =>
+  catchAsync(async (req, res, next) => {
+    console.log(req.body);
+    const { id } = req.params;
+    const doc = await Model.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc
+      }
+    });
+  });

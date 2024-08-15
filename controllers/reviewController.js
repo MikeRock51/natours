@@ -27,4 +27,5 @@ module.exports.createReview = catchAsync(async (req, res, next) => {
   });
 });
 
+module.exports.updateReview = factory.updateOne(ReviewModel);
 module.exports.deleteReview = factory.deleteOne(ReviewModel);

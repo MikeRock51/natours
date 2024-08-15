@@ -15,7 +15,11 @@ router
 
 router
   .route('/me')
-  .patch(authController.authenticate, userController.updateUser)
+  .patch(
+    authController.authenticate,
+    userController.validateAndFilterUpdateBody,
+    userController.updateUser
+  )
   .delete(authController.authenticate, userController.deleteMe);
 
 router
