@@ -22,6 +22,7 @@ module.exports.setTourBody = (req, res, next) => {
   next();
 };
 
+module.exports.getReview = factory.getOne(ReviewModel);
 module.exports.createReview = factory.createOne(ReviewModel);
 module.exports.updateReview = factory.updateOne(ReviewModel);
 module.exports.deleteReview = factory.deleteOne(ReviewModel);
