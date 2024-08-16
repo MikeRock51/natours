@@ -5,9 +5,8 @@ const factory = require('./factoryFunctions');
 // const APIFeatures = require('../utils/apiFeatures');
 // const fs = require('fs');
 
-exports.getAllTours = factory.getAll(Tour);
-
 exports.getTour = factory.getOne(Tour, { populate: { path: 'reviews' } });
+exports.getAllTours = factory.getAll(Tour);
 exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
