@@ -1,28 +1,11 @@
-// const fs = require('fs');
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
 const { catchAsync } = require('../utils/errors/errorHandler');
 const factory = require('./factoryFunctions');
 // const AppError = require('../utils/errors/AppErrors');
+// const APIFeatures = require('../utils/apiFeatures');
+// const fs = require('fs');
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  const query = Tour.find();
-  const features = new APIFeatures(query, req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const tours = await features.dbQuery;
-
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours
-    }
-  });
-});
+exports.getAllTours = factory.getAll(Tour);
 
 exports.getTour = factory.getOne(Tour, { populate: { path: 'reviews' } });
 exports.createTour = factory.createOne(Tour);
