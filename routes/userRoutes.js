@@ -15,6 +15,11 @@ router
 
 router
   .route('/me')
+  .get(
+    authController.authenticate,
+    userController.getMe,
+    userController.getUser
+  )
   .patch(
     authController.authenticate,
     userController.validateAndFilterUpdateBody,

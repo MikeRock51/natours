@@ -43,6 +43,11 @@ exports.validateAndFilterUpdateBody = (req, res, next) => {
 
 exports.updateUser = factory.updateOne(UserModel);
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.currentUser._id;
+  next();
+};
+
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await UserModel.findOneAndUpdate(req.currentUser._id, { active: false });
 
