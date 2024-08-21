@@ -8,21 +8,32 @@ const router = express.Router();
 // router.param('id', tourController.checkID);
 
 router.use('/:tourId/reviews', reviewRouter);
-
-router.route('/stats').get(authenticate, tourController.getStats);
+router.route('/stats').get(tourController.getStats);
 router
   .route('/monthly-plan/:year')
-  .get(authenticate, tourController.getMonthlyPlan);
+  .get(
+    authenticate,
+    restrictTo('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan
+  );
 
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(
+    authenticate,
+    restrictTo('admin', 'lead-guide'),
+    tourController.createTour
+  );
 
 router
   .route('/:id')
   .get(tourController.getTour)
-  .patch(tourController.updateTour)
+  .patch(
+    authenticate,
+    restrictTo('admin', 'lead-guide'),
+    tourController.updateTour
+  )
   .delete(
     authenticate,
     restrictTo('admin', 'lead-guide'),

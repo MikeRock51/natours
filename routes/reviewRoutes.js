@@ -11,15 +11,17 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+router.use(authenticate);
+
 router
   .route('/')
-  .get(authenticate, getAllReviews)
-  .post(authenticate, restrictTo('user'), setTourBody, createReview);
+  .get(getAllReviews)
+  .post(restrictTo('user'), setTourBody, createReview);
 
 router
   .route('/:id')
   .get(getReview)
-  .patch(authenticate, updateReview)
-  .delete(authenticate, deleteReview);
+  .patch(restrictTo('user', 'admin'), updateReview)
+  .delete(restrictTo('user', 'admin'), deleteReview);
 
 module.exports = router;
