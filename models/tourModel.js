@@ -118,6 +118,9 @@ const toursSchema = mongoose.Schema(
   }
 );
 
+toursSchema.index({ price: 1, ratingsAverage: -1 });
+toursSchema.index({ startLocation: '2dsphere' });
+
 toursSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'guides'
